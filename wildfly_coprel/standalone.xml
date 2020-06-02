@@ -36,6 +36,7 @@
         <extension module="org.wildfly.extension.request-controller"/>
         <extension module="org.wildfly.extension.security.manager"/>
         <extension module="org.wildfly.extension.undertow"/>
+        <extension module="org.wildfly.extension.messaging-activemq"/>
     </extensions>
     <management>
         <security-realms>
@@ -157,36 +158,297 @@
                         <password>sa</password>
                     </security>
                 </datasource>
+                <datasource jta="true" jndi-name="java:/zeus/jdbc/PostaEmServicoDS" pool-name="PostaEmServicoDS" enabled="true" use-java-context="true" statistics-enabled="true">
+                    <connection-url>jdbc:oracle:thin:@192.168.0.23:1521:coprel</connection-url>
+                    <driver>oracle</driver>
+                    <pool>
+                        <min-pool-size>1</min-pool-size>
+                        <max-pool-size>100</max-pool-size>
+                        <prefill>true</prefill>
+                        <use-strict-min>false</use-strict-min>
+                        <flush-strategy>FailingConnectionOnly</flush-strategy>
+                    </pool>
+                    <security>
+                        <user-name>ISD_COPREL_DATA_INT</user-name>
+                        <password>brutal</password>
+                    </security>
+                    <validation>
+                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
+                        <background-validation>true</background-validation>
+                        <stale-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker"/>
+                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter"/>
+                    </validation>
+                    <statement>
+                        <prepared-statement-cache-size>32</prepared-statement-cache-size>
+                    </statement>
+                </datasource>
                 <datasource jndi-name="java:/zeus/jdbc/BDIDS" pool-name="BDIDS" enabled="true" use-java-context="true">
-                        <connection-url>jdbc:oracle:thin:@192.200.9.200:1521:ndm200</connection-url>
-                        <driver>oracle</driver>
-                        <pool>
-                            <min-pool-size>1</min-pool-size>
-                            <max-pool-size>200</max-pool-size>
-                            <prefill>true</prefill>
-                            <use-strict-min>false</use-strict-min>
-                            <flush-strategy>FailingConnectionOnly</flush-strategy>
-                        </pool>
-                        <security>
-                            <user-name>EDEN_DATA</user-name>
-                            <password>brutal</password>
-                        </security>
-                        <validation>
-                            <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
-                            <background-validation>true</background-validation>
-                            <stale-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker"/>
-                            <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter"/>
-                        </validation>
-                        <statement>
-                            <prepared-statement-cache-size>32</prepared-statement-cache-size>
-                        </statement>
-                    </datasource>
+                    <connection-url>jdbc:oracle:thin:@192.200.9.200:1521:ndm200</connection-url>
+                    <driver>oracle</driver>
+                    <pool>
+                        <min-pool-size>1</min-pool-size>
+                        <max-pool-size>200</max-pool-size>
+                        <prefill>true</prefill>
+                        <use-strict-min>false</use-strict-min>
+                        <flush-strategy>FailingConnectionOnly</flush-strategy>
+                    </pool>
+                    <security>
+                        <user-name>EDEN_DATA</user-name>
+                        <password>brutal</password>
+                    </security>
+                    <validation>
+                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
+                        <background-validation>true</background-validation>
+                        <stale-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker"/>
+                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter"/>
+                    </validation>
+                    <statement>
+                        <prepared-statement-cache-size>32</prepared-statement-cache-size>
+                    </statement>
+                </datasource>
+                <datasource jta="false" jndi-name="java:/ingrid/jdbc/SchedulerDS" pool-name="SchedulerDS" enabled="true" use-java-context="true" statistics-enabled="true">
+                    <connection-url>jdbc:oracle:thin:@192.168.0.23:1521:coprel</connection-url>
+                    <driver>oracle</driver>
+                    <pool>
+                        <min-pool-size>1</min-pool-size>
+                        <max-pool-size>100</max-pool-size>
+                        <prefill>true</prefill>
+                        <use-strict-min>false</use-strict-min>
+                        <flush-strategy>FailingConnectionOnly</flush-strategy>
+                    </pool>
+                    <security>
+                        <user-name>ISD_COPREL_SCHEDULER</user-name>
+                        <password>brutal</password>
+                    </security>
+                    <validation>
+                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
+                        <background-validation>true</background-validation>
+                        <stale-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker"/>
+                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter"/>
+                    </validation>
+                    <statement>
+                        <prepared-statement-cache-size>32</prepared-statement-cache-size>
+                    </statement>
+                </datasource>
+                <xa-datasource jndi-name="java:/zeus/jdbc/OracleDS" pool-name="OracleDS" enabled="true" use-ccm="false" statistics-enabled="true">
+                    <xa-datasource-property name="URL">
+                            jdbc:oracle:thin:@192.168.0.23:1521:coprel
+                    </xa-datasource-property>
+                    <xa-datasource-property name="User">
+                            ISD_COPREL
+                    </xa-datasource-property>
+                    <xa-datasource-property name="Password">
+                            brutal
+                    </xa-datasource-property>
+                    <xa-datasource-class>oracle.jdbc.xa.client.OracleXADataSource</xa-datasource-class>
+                    <driver>oraclexa</driver>
+                    <xa-pool>
+                        <min-pool-size>5</min-pool-size>
+                        <max-pool-size>100</max-pool-size>
+                        <prefill>true</prefill>
+                        <is-same-rm-override>false</is-same-rm-override>
+                        <no-tx-separate-pools>true</no-tx-separate-pools>
+                    </xa-pool>
+                    <validation>
+                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
+                        <validate-on-match>false</validate-on-match>
+                        <background-validation>true</background-validation>
+                        <stale-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker"/>
+                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter"/>
+                    </validation>
+                    <statement>
+                        <share-prepared-statements>false</share-prepared-statements>
+                    </statement>
+                </xa-datasource>
+                <xa-datasource jndi-name="java:/zeus/jdbc/SGDDS" pool-name="SGDDS" enabled="true" use-ccm="false" statistics-enabled="true">
+                    <xa-datasource-property name="URL">
+                            jdbc:oracle:thin:@192.168.0.23:1521:coprel
+                    </xa-datasource-property>
+                    <xa-datasource-property name="User">
+                            ISD_COPREL_SGD
+                    </xa-datasource-property>
+                    <xa-datasource-property name="Password">
+                            brutal
+                    </xa-datasource-property>
+                    <xa-datasource-class>oracle.jdbc.xa.client.OracleXADataSource</xa-datasource-class>
+                    <driver>oraclexa</driver>
+                    <xa-pool>
+                        <min-pool-size>1</min-pool-size>
+                        <max-pool-size>100</max-pool-size>
+                        <prefill>true</prefill>
+                        <is-same-rm-override>false</is-same-rm-override>
+                        <no-tx-separate-pools>true</no-tx-separate-pools>
+                    </xa-pool>
+                    <validation>
+                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
+                        <validate-on-match>false</validate-on-match>
+                        <background-validation>true</background-validation>
+                        <stale-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker"/>
+                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter"/>
+                    </validation>
+                    <statement>
+                        <share-prepared-statements>false</share-prepared-statements>
+                    </statement>
+                </xa-datasource>
+                <xa-datasource jndi-name="java:/zeus/jdbc/PosicionalDS" pool-name="PosicionalDS" enabled="true" use-ccm="false" statistics-enabled="true">
+                    <xa-datasource-property name="URL">
+                            jdbc:oracle:thin:@192.168.0.23:1521:coprel
+                    </xa-datasource-property>
+                    <xa-datasource-property name="User">
+                            ISD_COPREL_POS
+                    </xa-datasource-property>
+                    <xa-datasource-property name="Password">
+                            brutal
+                    </xa-datasource-property>
+                    <xa-datasource-class>oracle.jdbc.xa.client.OracleXADataSource</xa-datasource-class>
+                    <driver>oraclexa</driver>
+                    <xa-pool>
+                        <min-pool-size>5</min-pool-size>
+                        <max-pool-size>200</max-pool-size>
+                        <prefill>true</prefill>
+                        <is-same-rm-override>false</is-same-rm-override>
+                        <no-tx-separate-pools>true</no-tx-separate-pools>
+                    </xa-pool>
+                    <validation>
+                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
+                        <validate-on-match>false</validate-on-match>
+                        <background-validation>true</background-validation>
+                        <stale-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker"/>
+                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter"/>
+                    </validation>
+                    <statement>
+                        <share-prepared-statements>false</share-prepared-statements>
+                    </statement>
+                </xa-datasource>
+                <xa-datasource jndi-name="java:/zeus/jdbc/ZeusLogDS" pool-name="ZeusLogDS" enabled="true" use-ccm="false" statistics-enabled="true">
+                    <xa-datasource-property name="URL">
+                            jdbc:oracle:thin:@192.168.0.23:1521:coprel
+                    </xa-datasource-property>
+                    <xa-datasource-property name="User">
+                            ISD_COPREL_LOGS
+                    </xa-datasource-property>
+                    <xa-datasource-property name="Password">
+                            brutal
+                    </xa-datasource-property>
+                    <xa-datasource-class>oracle.jdbc.xa.client.OracleXADataSource</xa-datasource-class>
+                    <driver>oraclexa</driver>
+                    <xa-pool>
+                        <min-pool-size>1</min-pool-size>
+                        <max-pool-size>100</max-pool-size>
+                        <prefill>true</prefill>
+                        <is-same-rm-override>false</is-same-rm-override>
+                        <no-tx-separate-pools>true</no-tx-separate-pools>
+                    </xa-pool>
+                    <validation>
+                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
+                        <validate-on-match>false</validate-on-match>
+                        <background-validation>true</background-validation>
+                        <stale-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker"/>
+                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter"/>
+                    </validation>
+                    <statement>
+                        <share-prepared-statements>false</share-prepared-statements>
+                    </statement>
+                </xa-datasource>
+                <xa-datasource jndi-name="java:/zeus/jdbc/IndicadoresDS" pool-name="IndicadoresDS" enabled="true" use-ccm="false" statistics-enabled="true">
+                    <xa-datasource-property name="URL">
+                            jdbc:oracle:thin:@192.168.0.23:1521:coprel
+                    </xa-datasource-property>
+                    <xa-datasource-property name="User">
+                            ISD_COPREL_IND
+                    </xa-datasource-property>
+                    <xa-datasource-property name="Password">
+                            brutal
+                    </xa-datasource-property>
+                    <xa-datasource-class>oracle.jdbc.xa.client.OracleXADataSource</xa-datasource-class>
+                    <driver>oraclexa</driver>
+                    <xa-pool>
+                        <min-pool-size>1</min-pool-size>
+                        <max-pool-size>100</max-pool-size>
+                        <prefill>true</prefill>
+                        <is-same-rm-override>false</is-same-rm-override>
+                        <no-tx-separate-pools>true</no-tx-separate-pools>
+                    </xa-pool>
+                    <validation>
+                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
+                        <validate-on-match>false</validate-on-match>
+                        <background-validation>true</background-validation>
+                        <stale-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker"/>
+                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter"/>
+                    </validation>
+                    <statement>
+                        <share-prepared-statements>false</share-prepared-statements>
+                    </statement>
+                </xa-datasource>
+                <xa-datasource jndi-name="java:/zeus/jdbc/GMTDS" pool-name="GMTDS" enabled="true" use-ccm="false" statistics-enabled="true">
+                    <xa-datasource-property name="URL">
+                            jdbc:oracle:thin:@192.168.0.23:1521:coprel
+                    </xa-datasource-property>
+                    <xa-datasource-property name="User">
+                            ISD_COPREL_GMT
+                    </xa-datasource-property>
+                    <xa-datasource-property name="Password">
+                            brutal
+                    </xa-datasource-property>
+                    <xa-datasource-class>oracle.jdbc.xa.client.OracleXADataSource</xa-datasource-class>
+                    <driver>oraclexa</driver>
+                    <xa-pool>
+                        <min-pool-size>1</min-pool-size>
+                        <max-pool-size>100</max-pool-size>
+                        <prefill>true</prefill>
+                        <is-same-rm-override>false</is-same-rm-override>
+                        <no-tx-separate-pools>true</no-tx-separate-pools>
+                    </xa-pool>
+                    <validation>
+                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
+                        <validate-on-match>false</validate-on-match>
+                        <background-validation>true</background-validation>
+                        <stale-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker"/>
+                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter"/>
+                    </validation>
+                    <statement>
+                        <share-prepared-statements>false</share-prepared-statements>
+                    </statement>
+                </xa-datasource>
+                <xa-datasource jndi-name="java:/ingrid/jdbc/SchedulerXaDS" pool-name="SchedulerXaDS" enabled="true" use-ccm="false" statistics-enabled="true">
+                    <xa-datasource-property name="URL">
+                            jdbc:oracle:thin:@192.168.0.23:1521:coprel
+                    </xa-datasource-property>
+                    <xa-datasource-property name="User">
+                            ISD_COPREL_SCHEDULER
+                    </xa-datasource-property>
+                    <xa-datasource-property name="Password">
+                            brutal
+                    </xa-datasource-property>
+                    <xa-datasource-class>oracle.jdbc.xa.client.OracleXADataSource</xa-datasource-class>
+                    <driver>oraclexa</driver>
+                    <xa-pool>
+                        <min-pool-size>1</min-pool-size>
+                        <max-pool-size>200</max-pool-size>
+                        <prefill>true</prefill>
+                        <is-same-rm-override>false</is-same-rm-override>
+                        <no-tx-separate-pools>true</no-tx-separate-pools>
+                    </xa-pool>
+                    <validation>
+                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker"/>
+                        <validate-on-match>false</validate-on-match>
+                        <background-validation>true</background-validation>
+                        <stale-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker"/>
+                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter"/>
+                    </validation>
+                    <statement>
+                        <share-prepared-statements>false</share-prepared-statements>
+                    </statement>
+                </xa-datasource>
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
                     </driver>
-                    <driver name="oracle" module="com.oracle">
-                        <driver-class>oracle.jdbc.driver.OracleDriver</driver-class>
+                    <driver name="oracle" module="com.oracle.ojdbc6">
+                        <driver-class>oracle.jdbc.OracleDriver</driver-class>
+                    </driver>
+                    <driver name="oraclexa" module="com.oracle.ojdbc6">
+                        <xa-datasource-class>oracle.jdbc.xa.client.OracleXADataSource</xa-datasource-class>
                     </driver>
                 </drivers>
             </datasources>
@@ -428,6 +690,84 @@
             <mail-session name="default" jndi-name="java:jboss/mail/Default">
                 <smtp-server outbound-socket-binding-ref="mail-smtp"/>
             </mail-session>
+        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:messaging-activemq:5.0">
+            <server name="default" persistence-enabled="false">
+                <security enabled="false"/>
+                <cluster user="messaging" password="messaging@123"/>
+                <management jmx-enabled="true"/>
+                <statistics enabled="true"/>
+                <bindings-directory/>
+                <journal-directory/>
+                <large-messages-directory/>
+                <paging-directory/>
+                <security-setting name="#">
+                    <role name="guest" send="true" consume="true" create-non-durable-queue="true" delete-non-durable-queue="true"/>
+                </security-setting>
+                <address-setting name="#" dead-letter-address="jms.queue.DLQ" expiry-address="jms.queue.ExpiryQueue" max-size-bytes="41943040" page-size-bytes="6097152" message-counter-history-day-limit="10" redistribution-delay="1000"/>
+                <http-connector name="http-connector" socket-binding="http" endpoint="http-acceptor"/>
+                <http-connector name="http-connector-throughput" socket-binding="http" endpoint="http-acceptor-throughput">
+                    <param name="batch-delay" value="50"/>
+                </http-connector>
+                <http-connector name="http-grid-dms-zeus-public-connector" socket-binding="http-grid-dms-zeus-public" endpoint="http-acceptor"/>
+                <in-vm-connector name="in-vm" server-id="0">
+                    <param name="buffer-pooling" value="false"/>
+                </in-vm-connector>
+                <http-acceptor name="http-acceptor" http-listener="default"/>
+                <http-acceptor name="http-acceptor-throughput" http-listener="default">
+                    <param name="batch-delay" value="50"/>
+                    <param name="direct-deliver" value="false"/>
+                </http-acceptor>
+                <in-vm-acceptor name="in-vm" server-id="0">
+                    <param name="buffer-pooling" value="false"/>
+                </in-vm-acceptor>
+                <broadcast-group name="bg-group1" jgroups-cluster="activemq-cluster" connectors="http-connector"/>
+                <discovery-group name="dg-group1" jgroups-cluster="activemq-cluster"/>
+                <cluster-connection name="my-cluster" address="jms" connector-name="http-connector" discovery-group="dg-group1"/>
+                <grouping-handler name="my-group-handler" type="${jboss.messaging.grouping.handler.type}" address="jms"/>
+                <jms-queue name="ExpiryQueue" entries="java:/jms/queue/ExpiryQueue"/>
+                <jms-queue name="DLQ" entries="java:/jms/queue/DLQ"/>
+                <jms-queue name="RefreshEngine" entries="zeus/RefreshEngine java:jboss/exported/zeus/RefreshEngine" durable="true"/>
+                <jms-queue name="RefreshOffLine" entries="zeus/RefreshOffLine java:jboss/exported/zeus/RefreshOffLine" durable="true"/>
+                <jms-queue name="RequestsSimulationServer" entries="zeus/RequestsSimulationServer java:jboss/exported/zeus/RequestsSimulationServer" durable="true"/>
+                <jms-queue name="CloseCustomerOutages" entries="zeus/CloseCustomerOutages java:jboss/exported/zeus/CloseCustomerOutages" durable="true"/>
+                <jms-queue name="RefreshOffLineSER" entries="zeus/RefreshOffLineSER java:jboss/exported/zeus/RefreshOffLineSER" durable="true"/>
+                <jms-queue name="RefreshEngineGMT" entries="zeus/RefreshEngineGMT java:jboss/exported/zeus/RefreshEngineGMT" durable="false"/>
+                <jms-queue name="INT31ShutdownScheduledLetter" entries="zeus/INT31ShutdownScheduledLetter java:jboss/exported/zeus/INT31ShutdownScheduledLetter" durable="false"/>
+                <jms-queue name="INT14MessageBean" entries="zeus/INT14MessageBean java:jboss/exported/zeus/INT14MessageBean" durable="false"/>
+                <jms-queue name="RFOperationResults" entries="zeus/RFOperationResults java:jboss/exported/zeus/RFOperationResults" durable="true"/>
+                <jms-queue name="ModifyingEntities" entries="zeus/ModifyingEntities java:jboss/exported/zeus/ModifyingEntities" durable="true"/>
+                <jms-queue name="ResourceProposeMDBBean" entries="zeus/ResourceProposeMDBBean java:jboss/exported/zeus/ResourceProposeMDBBean" durable="true"/>
+                <jms-queue name="WorkflowSign" entries="zeus/WorkflowSign java:jboss/exported/zeus/WorkflowSign" durable="true"/>
+                <jms-queue name="WorkflowActions" entries="zeus/WorkflowActions java:jboss/exported/zeus/WorkflowActions" durable="true"/>
+                <jms-queue name="CalculatePriorityNetworkEvent" entries="zeus/CalculatePriorityNetworkEvent java:jboss/exported/zeus/CalculatePriorityNetworkEvent" durable="true"/>
+                <jms-queue name="WorkflowEngineRefresh" entries="zeus/WorkflowEngineRefresh java:jboss/exported/zeus/WorkflowEngineRefresh" durable="true"/>
+                <jms-queue name="InstrumentationQueue" entries="jms/queue/InstrumentationQueue java:jboss/exported/jms/queue/InstrumentationQueue" durable="true"/>
+                <jms-queue name="MessageIM" entries="zeus/MessageIM java:jboss/exported/zeus/MessageIM" durable="true"/>
+                <jms-queue name="IntegrationMessageOut" entries="ingrid/queue/IntegrationMessageOut java:jboss/exported/ingrid/queue/IntegrationMessageOut" durable="true"/>
+                <jms-topic name="operacionTopic" entries="com.soluzionasf.operacionTopic java:jboss/exported/com.soluzionasf.operacionTopic"/>
+                <jms-topic name="RefreshTopic" entries="zeus/RefreshTopic java:jboss/exported/zeus/RefreshTopic"/>
+                <jms-topic name="ReadySimulationsTopic" entries="zeus/ReadySimulationsTopic java:jboss/exported/zeus/ReadySimulationsTopic"/>
+                <jms-topic name="RepaintRequieredTopic" entries="zeus/RepaintRequieredTopic java:jboss/exported/zeus/RepaintRequieredTopic"/>
+                <jms-topic name="LoadFlowTopic" entries="zeus/LoadFlowTopic java:jboss/exported/zeus/LoadFlowTopic"/>
+                <jms-topic name="PuestaEnServicio" entries="zeus/PuestaEnServicio java:jboss/exported/zeus/PuestaEnServicio"/>
+                <jms-topic name="RefreshEventSwitchTopic" entries="zeus/RefreshEventSwitchTopic java:jboss/exported/zeus/RefreshEventSwitchTopic"/>
+                <jms-topic name="RefreshAMPTopic" entries="zamp/RefreshAMPTopic java:jboss/exported/zamp/RefreshAMPTopic"/>
+                <jms-topic name="RefreshEngineZamp" entries="zamp/RefreshEngineZamp java:jboss/exported/zamp/RefreshEngineZamp"/>
+                <jms-topic name="RefreshAlarm" entries="zeus/RefreshAlarm java:jboss/exported/zeus/RefreshAlarm"/>
+                <jms-topic name="AllModifyingEntities" entries="zeus/AllModifyingEntities java:jboss/exported/zeus/AllModifyingEntities"/>
+                <jms-topic name="CacheInvalidatorMessageBean" entries="zeus/CacheInvalidatorMessageBean java:jboss/exported/zeus/CacheInvalidatorMessageBean"/>
+                <jms-topic name="RefreshInterface" entries="zeus/RefreshInterface java:jboss/exported/zeus/RefreshInterface"/>
+                <connection-factory name="InVmConnectionFactory" entries="java:/ConnectionFactory" connectors="in-vm"/>
+                <connection-factory name="RemoteConnectionFactory" entries="RemoteConnectionFactory java:jboss/exported/zeus/RemoteConnectionFactory java:jboss/exported/jms/RemoteConnectionFactory" connectors="http-connector" ha="true" block-on-acknowledge="true" reconnect-attempts="-1"/>
+                <connection-factory name="InVmXAConnectionFactory" entries="java:/XAConnectionFactory" connectors="in-vm" factory-type="XA_GENERIC"/>
+                <connection-factory name="NotifiersCFRemote" entries="zeus/NotifiersCFRemote java:jboss/exported/zeus/NotifiersCFRemote" connectors="http-connector"/>
+                <connection-factory name="NotifiersCFPublic" entries="zeus/NotifiersCFPublic java:jboss/exported/zeus/NotifiersCFPublic" connectors="http-grid-dms-zeus-public-connector"/>
+                <connection-factory name="XANotifiersCFRemote" entries="zeus/XANotifiersCFRemote java:jboss/exported/zeus/XANotifiersCFRemote" connectors="http-connector" factory-type="XA_GENERIC"/>
+                <pooled-connection-factory name="activemq-ra" entries="java:/JmsXA java:jboss/DefaultJMSConnectionFactory" connectors="in-vm" transaction="xa" max-pool-size="200"/>
+                <pooled-connection-factory name="NotifiersCF" entries="zeus/NotifiersCF" connectors="in-vm" max-pool-size="200"/>
+                <pooled-connection-factory name="XANotifiersCF" entries="zeus/XANotifiersCF" connectors="in-vm" transaction="xa" max-pool-size="200"/>
+            </server>
         </subsystem>
         <subsystem xmlns="urn:wildfly:microprofile-config-smallrye:1.0"/>
         <subsystem xmlns="urn:wildfly:microprofile-health-smallrye:1.0" security-enabled="false"/>
